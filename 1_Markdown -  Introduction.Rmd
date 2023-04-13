@@ -1,0 +1,83 @@
+---
+title: "MOSA Introduction"
+author: "Joachim Marien"
+date: "29 maart 2022"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## **Introduction**
+
+### **1.1 MOSA**
+In the context of a project on the ecology of crop destroying rodents, H. Leirs et al. started a long-term Capture-Mark-Recapture study on a 3 ha mosaic field (MOSA) near the campus of the Sokoine University of Agriculture in Morogoro, Tanzania (6 51'S and 37 38'E). A robust trapping design was used, with primary trapping sessions every fourth week and three consecutive secondary trapping nights per session. At each trapping event, 300 Sherman life traps were placed at 10m by 10m marked trapping stations. Between March 1994 and March 2022, in 351 primary  and 1053 secondary capture sessions, 19661 individual *Mastomys natalensis* were captured. Each animal was transported to the lab, weighed and checked for signs of breeding activity, marked by toe clipping and then released again at the site it was captured (Leirs 1990). Blood samples were taken from each animal since April 2007.
+
+![MOSA field in September](C:/Users/joach/OneDrive - Universiteit Antwerpen/Bureaublad/PhD selection/MOSA/CMR cleaning/since Feb 2022/R-scripts/markdown/Final markdown files/field.jpg){width=10in}
+
+
+
+The monthly capture data from the MOSA project can be downloaded [here](https://raw.githubusercontent.com/Joachimmarien/MOSA/main/mosa_Feb2023_flags.csv). The data paper also presents a detailed overview of the experimental setup. The additional headings included on this website provide processed CMR data. We show how we clean the data each month and how to build the typical encounter matrices (100101) that are used for survival analyses (e.g. in MARK). We also put R-code online that we used to further process the data for density estimations, survival and time series analyses. This code and preprocessed data can be used by other researchers who are interested in our data and R-code for their own work. If any more questions arise, you can contact: Herwig Leirs (herwig.leirs@uantwerpen.be), Vincent Sluydts (Vincent.sluydts@uantwerpen.be) , Joachim Marien (joachim.marien@uantwerpen.be) or Luci Kirkpatrick (Lucinda.Kirkpatrick@uantwerpen.be). 
+
+
+![MOSA time series March 1994 - March 2022](C:/Users/joach/OneDrive - Universiteit Antwerpen/Bureaublad/PhD selection/MOSA/CMR cleaning/since Feb 2022/R-scripts/markdown/Final markdown files/time_series.jpeg){width=10in}
+
+
+### **1.2 *Mastomys natalensis***
+The main rodent species captured on the MOSA field (>98%) is the the Natal multimammate mouse *Mastomys natalensis*,  a widely distributed rodent (family Muridae, subfamily Murinae) in sub-Saharan Africa (Kingdon et al., 2013). The animal thanks its name to the two rows of 8-12 mammae that females possess, which correspond to the high litter size (sometimes > 20 pups) when giving birth (Leirs, 1994). Its natural habitat consists of savannah and grassland areas, but the animal currently thrives in agricultural fields and human dwellings (Coetzee, 1975). In agriculture, *M. natalensis* is considered to be the most important pest species from Africa, as outbreaks can cause crop losses up to 80% at both the household and regional level (Mulungu, 2017; Mwanjabe et al., 2002). The rodent is also notoriously known for hosting several human diseases, including *Yersinia pestis* (bubonic plague), *Leptospira interrogans* (leptospirosis) and Lassa virus (Lassa fever) (Holt et al., 2006; Meerburg et al., 2009; Monath, 1987; Neerinckx et al., 2008). 
+
+![*Mastomys natalensis* with clipped toes in MOSA](C:/Users/joach/OneDrive - Universiteit Antwerpen/Bureaublad/PhD selection/MOSA/CMR cleaning/since Feb 2022/R-scripts/markdown/Final markdown files/mastomys.jpg){width=4in} 
+
+### **1.3 Ecology in Morogoro (Tanzania)**
+Because of its relevance in agriculture and public health, the ecology of *M. natalensis* has been extensively studied in Tanzania over the past 30 years (Telford 1989, Leirs 1994; Sluydts et al. 2009; Singleton et al. 2010; Mulungu 2017). The population dynamics of the rodent are heavily depending on rainfall, which is bimodal in this region with long (March-May) and short (November-December) rains. The variation in rainfall results in strong density fluctuations between seasons, generally ranging from 20-300 individuals per hectare (Leirs, 1994; Sluydts et al., 2009). Breeding of *M. natalensis* is triggered at the end of the long rains by sprouting young grass and lasts until November, when the population size peaks (H Leirs et al., 1990; Mlyashimbi et al., 2018). Shortly hereafter, the population decreases due to competition, food deprivation and other environmental factors, to reach its lowest point around May (Leirs et al., 1990). Occasional outbreak densities can be reached after heavy rainfall at the start of the new year, as this stimulates growth and fecundity of new recruits. The result is that mice from two generations can breed during the same season, leading to outbreak densities up to 500 individuals per hectare at some years (H Leirs et al., 1990). Other interesting aspects of the rodent are its promiscuous behavior and complete lack of territoriality which is rarely seen in small mammals (Borremans et al., 2013; Kennis et al., 2008; Veenstra, 1958). Because home range overlap is generally high and increases significantly with density, contact rates are assumed to be density-dependent, probably nonlinearly (Borremans et al. 2013; 2016; 2017). The home range size is generally assumed to be small, although estimations of its absolute size depend on the used measuring technique (e.g. 650m^2^ by capture-mark-recapture and 1200m^2^ by radio-tracking methods) (Borremans et al., 2013; Leirs et al., 1997).
+
+![Map of Morogoro (VOA website)](C:/Users/joach/OneDrive - Universiteit Antwerpen/Bureaublad/PhD selection/MOSA/CMR cleaning/since Feb 2022/R-scripts/markdown/Final markdown files/map.jpg){width=8in} 
+
+
+
+### **1.4 References**
+Borremans, B., Hughes, N.K., Reijniers, J., Sluydts, V., Katakweba, A. a. S., Mulungu, L.S., Sabuni, C. a., Makundi, R.H., Leirs, H., 2013. Happily together forever: temporal variation in spatial patterns and complete lack of territoriality in a promiscuous rodent. Popul. Ecol. 56, 109-118. https://doi.org/10.1007/s10144-013-0393-2
+
+Borremans, B., Reijniers, J., Hens, N., Leirs, H., 2017. The shape of the contact-density function matters when modelling parasite transmission in fluctuating populations. R. Soc. Open Sci. 4, 171308. https://doi.org/10.1098/rsos.171308
+
+Borremans, B., Reijniers, J., Hughes, N.K., Godfrey, S.S., Gryseels, S., Makundi, R.H., Leirs, H., 2016. Nonlinear scaling of foraging contacts with rodent population density. Oikos 1-9. https://doi.org/10.1111/oik.03623
+
+Coetzee, C.G., 1975. The biology, behaviour, and ecology of Mastomys natalensis in southern Africa. Bull. World Health Organ. 52, 637-44.
+Holt, J., Davis, S., Leirs, H., 2006. A model of Leptospirosis infection in an African rodent to determine risk to humans: Seasonal fluctuations and the impact of rodent control. Acta Trop. 99, 218-225. https://doi.org/10.1016/j.actatropica.2006.08.003
+
+Kennis, J., Sluydts, V., Leirs, H., van Hooft, W.F.P., 2008. Polyandry and polygyny in an African rodent pest species, Mastomys natalensis. Mammalia 72, 150-160. https://doi.org/10.1515/MAMM.2008.025
+
+Kingdon, J., Happold, D., Butynski, T., Hoffmann, M., Happold, M., Kalina, J., 2013. The mammals of Africa. Volume III Rodents, hares and rabbits. Bloomsbury Publishing, Londen, United Kingdom.
+
+Leirs, H., 1994. Population ecology of Mastomys natalensis (Smith, 1834). Implications for rodent control in Africa. Brussels.
+Leirs, Herwig, Stuyck, J., Verhagen, R., Verheyen, W., 1990. Seasonal variation in growth of Mastomys natalensis (Rodentia: Muridae) in Morogoro, Tanzania. Afr. J. Ecol. 28, 298-306. https://doi.org/10.1111/j.1365-2028.1990.tb01164.x
+
+Leirs, H, Verheyen, W., Michiels, M., Verhagen, R., Stuyck, J., 1990. The relation between rainfall and the breeding season of mastomys natalensis (smith, 1834) in morogoro, tanzania. Ann. la societe R. Zool. Belgique 119, 59-64.
+
+Leirs, H., Verheyen, W., Verhagen, R., 1997. Spatial patterns in Mastomys natalensis in Tanzania (Rodentia, Muridae). Mammalia 60, 545-556.
+Meerburg, B.G., Singleton, G.R., Kijlstra, A., 2009. Rodent-borne diseases and their risks for public health, Critical Reviews in Microbiology. https://doi.org/10.1080/10408410902989837
+
+Mlyashimbi, E.C.M., Marien, J., Kimaro, D.N., Tarimo, A.J.P., Isabirye, M., Makundi, R.H., Massawe, A.W., Mdangi, M.E., Kifumba, D., Nakiyemba, A., Leirs, H., Belmain, S.R., Mulungu, L.S., 2018. Relationships between seasonal changes in diet of Multimammate rat (Mastomys natalensis) and its breeding patterns in semi-arid areas in Tanzania. Cogent Food Agric. 4. https://doi.org/10.1080/23311932.2018.1507509
+
+Monath, T.P., 1987. Lassa fever: new issues raised by field studies in West Africa. J. Infect. Dis. 155, 433-436. https://doi.org/10.1093/infdis/155.3.433
+
+Mulungu, L.S., 2017. Control of rodent pests in maize cultivation: the case of Africa 317-337. https://doi.org/10.19103/AS.2016.0002.18
+Mwanjabe, P.S., Sirima, F.B., Lusingu, J., 2002. Crop losses due to outbreaks of Mastomys natalensis (Smith, 1834) Muridae, Rodentia, in the Lindi Region of Tanzania. Int. Biodeterior. Biodegradation 49, 133-137. https://doi.org/10.1016/S0964-8305(01)00113-5
+
+Neerinckx, S.B., Peterson, A.T., Gulinck, H., Deckers, J., Leirs, H., 2008. Geographic distribution and ecological niche of plague in sub-Saharan Africa. Int. J. Health Geogr. 7, 54. https://doi.org/10.1186/1476-072X-7-54
+
+Singleton, G., Belmain, S., Brown, P., Hardy, B., 2010. Rodent Outbreaks: Ecology and Impacts. Inter- national Rice Research Institute., Los Banos (Philippines): Inter- national Rice Research Institute.
+
+Sluydts, V., Davis, S., Mercelis, S., Leirs, H., 2009. Comparison of multimammate mouse (Mastomys natalensis) demography in monoculture and mosaic agricultural habitat: Implications for pest management. Crop Prot. 28, 647-654. https://doi.org/10.1016/j.cropro.2009.03.018
+
+Veenstra, A.J.F., 1958. The behaviour of the multimammate mouse, Rattus (Mastomys) natalensis (A. Smith). Anim. Behav. 6, 195-206.
+
+![Preparing for MOSA fieldwork](C:/Users/joach/OneDrive - Universiteit Antwerpen/Bureaublad/PhD selection/MOSA/CMR cleaning/since Feb 2022/R-scripts/markdown/Final markdown files/shirts.jpg){width=6in}
+
