@@ -26,7 +26,6 @@ rm(list=ls())
 library("readr")
 
 mosa<-data.frame(read.csv(url("https://raw.githubusercontent.com/Joachimmarien/MOSA/main/mosa_Feb2023_flags.csv"), sep=';'))
-# mosa <- read.delim("C:/Users/joach/OneDrive - Universiteit Antwerpen/Bureaublad/PhD selection/MOSA/CMR cleaning/since Feb 2022/mosa_Feb2023_flags2.txt")
 mosa=mosa[,1:10] #select relevant column
 mosa2=mosa[which(mosa[,3]=="MOSA"),]#Select field
 mosa2$DATE=as.Date(as.character(mosa2$DATE), format="%d/%m/%Y") #Put date in correct form
