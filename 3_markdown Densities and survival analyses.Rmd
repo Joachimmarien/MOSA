@@ -1,5 +1,5 @@
 ---
-title: "Mosa: ensity estimation and survival analysis"
+title: "Mosa: density estimation and survival analysis"
 author: "Joachim Marien"
 date: "31 maart 2022"
 output: html_document
@@ -30,11 +30,11 @@ rm(list=ls()) #Remove previous R sessions
 # install.packages("readr")
 library("readr")
 
+#load data from github (I had to split the data file as only 25MB can be uploaded at once on Github)
 prim_sec1<-data.frame(read.csv(url("https://raw.githubusercontent.com/Joachimmarien/MOSA/main/C_primary_secondary_capture_3consecutive_o_1_10000b.csv"), sep=';'))
 prim_sec2<-data.frame(read.csv(url("https://raw.githubusercontent.com/Joachimmarien/MOSA/main/C_primary_secondary_capture_3consecutive_o_10000-20000b.csv"), sep=';'))
 prim_sec=rbind(prim_sec1,prim_sec2)
 
-# prim_sec <- read.delim("C:/Users/joach/OneDrive - Universiteit Antwerpen/Bureaublad/PhD selection/MOSA/CMR cleaning/since Feb 2022/R-scripts/markdown/Final markdown files/mosa_04_03_2023/C_primary_secondary_capture_3consecutive_o.txt")
 prim_sec_mat=prim_sec[,10:ncol(prim_sec)]#Select capture-recapture matrix
 prim_sec_char=prim_sec[,1:9]#select host characteristics
 
