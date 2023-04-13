@@ -1,0 +1,257 @@
+---
+title: "MOSA MORV serology"
+author: "Joachim Marien"
+date: "December 2021 Antwerp ITM"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##  **3 Arenavirus transmission dynamics in MOSA**
+
+
+### **3.1 Introduction to the system and time series analyses**
+
+Here, we will analyze the transmission dynamics of Morogoro arenavirus (MORV) in highly fluctuating populations of multimammate mice (*Mastomys natalensis*) in Tanzania as presented in [Marien et al 2019](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.13107?casa_token=C0ZzGNFTHLEAAAAA%3AwE-TjxX4_TeNK-Dc-Um4v7LM0gkbF9dhyo1W4UJ43i-eRu6_66FBYYhPW2aLii-tDf0hU8Khuks7vevY). The MORV-*M. natalensis* system is a suitable model for examining parasite-host  interactions in natural conditions, as the ecology of the host and the virus have been studied intensively. The system provides a safe substitute for studying closely related arenaviruses such as Lassa virus, the aetiologic agent of Lassa fever in humans. In Tanzania, *Mastomys* densities fluctuate heavily between seasons and years, generally ranging from 20 to 300 individuals per hectare but occasionally reaching outbreak densities of 600 individuals/ha or higher. The seasonal fluctuations are the result of a bimodal rain pattern with long (March-May) and short (November-December) rains. Breeding is triggered by sprouting young grass at the end of the long rains and lasts until November, when the population size peaks. Shortly hereafter, the population decreases due to competition, food scarcity and other environmental conditions, reaching its lowest point around May.
+
+Morogoro virus (MORV) is an arenavirus that has been discovered in Tanzania and can be regarded as a strain of Mopeia virus (Gunther et al. 2009a; Maes et al. 2018). The virus is genetically closely related to LASV and has the same reservoir host, but while LASV is limited to the West African A-I and A-II lineages of M. natalensis, MORV only occurs in the B-V lineage (S. Gryseels 2015, PhD thesis; Olayemi et al. 2016b). Because transmission of MORV to other sympatric rodent species, or even subspecific clades of M. natalensis, has never been observed, M. natalensis B-V is currently assumed to be the only suitable host for this virus (de Bellocq et al. 2010; Gryseels et al. 2017). MORV seems to be endemic in highly fluctuating populations of this host and can be detected even at very low densities (Borremans et al. 2011). Depending on the study, prevalence ranges between 0 and 25% in Tanzania, whereas seroprevalence peaks were observed up to 70% (Gunther et al. 2009b; de Bellocq et al. 2010; Marien et al. unpublished data). Given that the virus is not pathogenic for humans and the population ecology of the host is well known, the MORV-M. natalensis system is considered a suitable model for examining parasite-host interactions in natural conditions. The system is especially considered a safe substitute for studying closely related but pathogenic arenaviruses such as LASV or LCMV. For these reasons, the transmission ecology of MORV has been extensively investigated the last decade, although several important aspects remain to be elucidated for a thorough understanding (Borremans et al. 2011, 2015; Gryseels et al. 2017). 
+
+Here, we will analyse data of a long-term experiment where rodents were  trapped each month on the MOSA grid in Tanzania since 2007. Blood samples of each trapped rodent were analyzed on antibodies against Morogoro arenavirus to estimate seroprevalence levels. 
+
+**Objective**: to investigate when outbreaks of arenaviruses can be expected in Tanzania.
+
+
+
+#### **3.1.1  Install and open additional R-packages**
+```{r,warning=F,echo=T,message=F}
+# install.packages("readr")
+# install.packages("gamm4")
+library("readr")
+library("gamm4")
+```
+R packages are collections of functions and data sets developed by the community. They increase the power of R by improving existing base R functionalities, or by adding new ones. For example, if you are usually working with R, probably you will have heard about 'dplyr' or 'data.table', two of the most popular R packages.
+
+To Install the packages, remove the '#' symbol in front of the first two lines of code.
+
+
+#### **3.1.2 Load data**
+```{r,warning=F,echo=T,eval=T,message=F}
+ 
+df1<-data.frame(read_csv(url("https://raw.githubusercontent.com/Joachimmarien/-ORT-course-JM/master/Morogoro%20Data2.csv")))
+head(df1)
+```
+
+The data that we will analyze is immediately imported from my  **GitHub** account. GitHub is a repository hosting service that adds many of its own features. It provides a Web-based graphical interface that provides access control and several collaboration features, such as a wikis and basic task management tools for every project. 
+
+
+#### **3.1.3  Plot time series**
+
+When analyzing time series data, it is always a good idea to start with a visualization of the raw data, which gives you a first view of what is going on with your system and might guide further analyses. We will use the standard 'plot' functions in R, as they are easy to manipulate. Remember that there are now also more advanced R-packages to visualize this data (e.g. ggplot2). 
+
+```{r, warning=F, echo=T,eval=T,message=F}
+par(mfrow=c(1, 1))
+par(mar=c(5.1,4.1,1.1,4.1))
+plot(as.Date(df1[,1]),(df1[,3]),pch=20,    ylab="Rodent Abundance",xlab="Years",col="white",cex.lab=1.2, ylim=c(0,(400)))
+lines(smooth.spline(as.Date(df1[,1]),(df1[,3]),spar=0.1))
+lines(smooth.spline(as.Date(df1[,1]),(df1[,2]*4+1),spar=0.1),col="red")
+axis(side = 4,at=c(0,100,200,300,400),labels=c(0,25,50,75,100))
+mtext(side = 4, line = 3, 'Seroprevalence (%)',cex=1.5)
+legend("topright",legend=c("Abundance","Seroprevalence"),pch=c(19,19), col=c("black","red"), pt.cex=c(1, 1), cex=1.5)
+
+```
+
+
+
+#### **3.1.4  Autocorrelation plots**
+
+An [autocorrelation plot](https://www.dummies.com/programming/big-data/data-science/autocorrelation-plots-graphical-technique-for-statistical-data/) is designed to show whether the elements of a time series are positively correlated, negatively correlated, or independent of each other. It shows the value of the autocorrelation function (acf) on the vertical axis, which can range from -1 to 1.The horizontal axis of an autocorrelation plot shows the size of the lag between the elements of the time series. For example, the autocorrelation with lag 4 is the correlation between the time series elements and the corresponding elements that were observed four time periods earlier. On the graph, there is a vertical line (a "spike") corresponding to each lag. The height of each spike shows the value of the autocorrelation function for the lag.The autocorrelation with lag zero always equals 1, because this represents the autocorrelation between each term and itself. 
+
+
+
+```{r, warning=F, echo=T,eval=T,message=F}
+abundance=ts(as.numeric(df1[,3]), frequency=12, start=c(2007,6))
+prevalence=ts(as.numeric(df1[,2]), frequency=12, start=c(2007,6))
+acf(abundance,main="Abundance")
+acf(prevalence,main="Seroprevalence")
+```
+
+We see stong autocorrelation for consecutive months for both host density and seroprevalence. Autocorrelation lasts for three-four months.  
+
+
+
+#### **3.1.5  Cross-correlation plot**
+
+One important thing we wish to determine is whether rodent abundance "causes" changes in MORV seroprevalence. In other words, is there a strong correlation between time series one (abundance) and two (seroprevalence) given a number of lags? The way we can detect this is through measuring cross-correlations. But how do we measure the lag where this is significant? One very handy way of doing so in R is using the ccf (cross-correlation) function.
+
+```{r, warning=F, echo=T,eval=T,message=F}
+ccfvalues = ccf(prevalence,abundance,lag.max=7,ylim=c(-0.2,0.3),ylab = "Cross-correlation",main="",xlab="Lag (Abundance-Seroprevalence)",cex.lab=1.5)#
+```
+
+It seems that the cross-correlation between abundance and seroprevalence are significant at lags of 2-4 month. This means that seroprevalence peaks 2-4 months after the peak in rodent abundance. 
+
+
+
+
+#### **3.1.6  Decomposition of time series (Abundance)**
+
+Time series [decomposition](https://anomaly.io/seasonal-trend-decomposition-in-r/index.html) is a mathematical procedure which transforms a time series into multiple different time series. Decomposition is often used to remove the seasonal effect from a time series. It provides a cleaner way to understand trends. For instance, lower ice cream sales during winter don't necessarily mean a company is performing poorly. To know whether or not this is the case, we need to remove the seasonality from the time series. 
+
+The original time series is often split into 3 component series:
+
+-**Seasonal**: Patterns that repeat with a fixed period of time. For example, Lassa fever cases increase during the dry season; this would produce data with a seasonality of one year.
+
+-**Trend**: The underlying trend of the metrics. Climate change improves the habitat of multimammate mice, resulting in an overall increase of Lassa fever cases during the last decade. 
+
+
+-**Random**: Also call "noise", "irregular" or "remainder," this is the residuals of the original time series after the seasonal and trend series are removed.
+
+We'll study the `decompose( )` function in R. As a decomposition function, it takes a time series as a parameter and decomposes it into seasonal, trend and random time series.
+
+
+```{r, warning=F, echo=T,eval=T,message=F}
+par(mfrow=c(1, 1))
+plot(decompose(abundance,type="mult"))
+```
+
+Besides the seasonal effect, we can see an increasing trend in host abundance around years 2010-2012. 
+
+
+
+
+#### **3.1.7 Decomposition of time series (seroprevalence)**
+
+```{r, warning=F, echo=T,eval=T,message=F}
+plot(decompose(prevalence,type="mult"))
+```
+
+Besides the seasonal effect, we can see an increasing trend in host abundance around years 2010-2012 and 2015-2016.  
+
+
+### **3.2 Generalised Additive Models **
+
+Many eco-epidemiological data sets do not fit simple linear models and are best described by "wiggly models", also known as [Generalised Additive Models (GAMs)](http://environmentalcomputing.net/intro-to-gams/). GAMs are an extension of Generalised Linear Models (GLMs) with a smoothing function. Of course, there are many sophisticated things going on when you fit a model with smooth terms, but you only need to understand the rationale and some basic theory.
+
+Let's start with an equation for a Gaussian linear model:
+
+$y = \beta 0 + x1 \beta1 + \epsilon,    \epsilon ~ N(0,\sigma2)$
+
+What changes in a GAM is the presence of a smoothing term:
+
+$y = \beta 0 + f(x1) + \epsilon,    \epsilon ~ N(0,\sigma2)$
+
+This simply means that the contribution to the linear predictor is now some function $f(x1)$ which depends on splines (combination of polynomes). This is not that dissimilar conceptually to using a quadratic ($x^2$) or cubic term ($x^3$) as your predictors in GLMs.
+
+GAMs can also be used to decompose time series. The added value is that we can immediately see if certain variables are significant and we can use it for model predictions (e.g. exercise 2).
+
+
+A very nice introduction to GAMs is written by [Noam Ross](https://noamross.github.io/gams-in-r-course/)
+
+
+#### **3.2.1 Generalised Additive Models (abundance)**
+
+```{r, warning=F, echo=T,eval=T,message=F}
+time=seq(1:length(prevalence))
+season=time%%12
+gam_abun=gamm(abundance~s(season)+s(time),family=poisson) 
+summary(gam_abun$gam)
+```
+
+Both seasonal and time effects are significant,  suggesting that there is some kind of non-linear pattern in the abundance data. This patterns can only be visualized using a plot (see below). 
+
+
+
+#### **3.2.2 Generalised Additive Models (Seroprevalence)**
+
+```{r, warning=F, echo=T,eval=T,message=F}
+gam_prev=gamm(prevalence~s(season)+s(time),family=poisson) 
+summary(gam_prev$gam)
+```
+
+Both seasonal and time effects are significant, suggesting that there is some kind of non-linear pattern in the seroprevalence data. 
+
+
+
+#### **3.2.3 GAM compare trend abundance with seroprevalence**
+
+To better understand how rodent abundance affects virus transmission, we will compare the trend abundance  derived from the GAM analyses to the seroprevalence trend. 
+
+```{r, warning=F, echo=T,eval=T,message=F}
+new.data=data.frame(time,season=8)
+abun_pred=predict(gam_abun$gam,new.data,se.fit=T,type='response')$fit
+sero_pred=predict(gam_prev$gam,new.data,se.fit=T,type='response')$fit
+plot(as.Date(df1[,1]),abun_pred, col="white",ylim=c(0,400),ylab="Rodent abundance",xlab="Time (Months)")
+lines(smooth.spline(as.Date(df1[,1]),sero_pred*5,spar=0.2),col="red",lty=1)
+lines(smooth.spline(as.Date(df1[,1]),abun_pred,spar=0.2),col="black",lty=1)
+axis(side = 4,at=c(0,100,200,300,400),labels=c(0,25,50,75,100))
+mtext(side = 4, line = 3, 'Seroprevalence (%)',cex=1)
+legend("topright",legend=c("Abundance","Seroprevalence"),pch=c(19,19), col=c("black","red"), pt.cex=c(1, 1), cex=1.2)
+```
+
+It seems that seroprevalence increases with rodent abundance when looking at the trend only. Indeed, we assume that transmission of MORV is **density  dependent**, meaning that transmission will increase when the contact rate between rodents increases (e.g. when there are more rodents/ha). 
+
+
+#### **3.2.4 GAM compare seasonal abundance with seroprevalence**
+
+The same comparison can be made for the seasonal components of abundance and seroprevalence.
+
+```{r, warning=F, echo=T,eval=T,message=F}
+new.data=data.frame(time=rep(1,length(season)),season=season)
+pred_abun=predict(gam_abun$gam,new.data,se.fit=T,type='response')$fit[1:12]
+pred_sero=predict(gam_prev$gam,new.data,se.fit=T,type='response')$fit[1:12]
+plot(as.Date(df1[1:12,1]),pred_abun, col="white",ylim=c(0,280),ylab="Rodent Abundance",xlab="Time (Months)")
+lines(smooth.spline(as.Date(df1[1:12,1]),pred_sero*20,spar=0.2),col="red",lty=1)
+lines(smooth.spline(as.Date(df1[1:12,1]),pred_abun,spar=0.2),col="black",lty=1)
+axis(side = 4,at=c(0,100,200,280,400),labels=c(0,25,50,75,100))
+mtext(side = 4, line = 3, 'Seroprevalence (%)',cex=1.5)
+legend("topright",legend=c("Abundance","Seroprevalence"),pch=c(19,19), col=c("black","red"), pt.cex=c(1, 1), cex=1.)
+
+```
+
+A similar pattern is seen between abundance and seroprevalence, although with a lag of 2 months. It seems that the number of MORV antibody positive animals peaks 1-2 months after the peak in rodent abundance. It is likely that most transmission happens just after the rodent density peak in November due to the infllux of susceptible juveniles. IgG antibodies can be seen twee weeks after infection, which can explain the delayed peak in seroprevalence in month (December-January). The seroprevalence stays high after January which can be explained the assumption that rodents remain antibody positive throughout their lives.
+
+
+
+#### **3.2.5 Seasonal risk period for arenavirus spillover in Tanzania**
+
+By multiplication of the seasonal components of abundance and seroprevalence it is possible to assess when risk periods of arenaviruses can be expected in Tanzania (i.e. when both rodent abundance and prevalence are high). Notice that we here make the assumption that antibody-positive animals are infectious. While this will not be true for all antibody-positive animals, we expect that a sufficient large proportion of the population remains infectious due to the relatively long infectious periods (three weeks) in comparison to the animal's lifespan (3 months).
+
+```{r, warning=F, echo=T,eval=T,message=F}
+prev=(predict(gam_prev$gam,newdata=new.data,se.fit=T,type='response')$fit[1:12])
+abun=predict(gam_abun$gam,new.data,se.fit=T,type='response')$fit[1:12]
+par(mfrow=c(1,1))
+plot(as.Date(df1[1:12,1]),abun, col="white",ylim=c(0,15),ylab="Infected animals/ha",xlab="Time (Months)")
+lines(smooth.spline(as.Date(df1[1:12,1]),prev/100*abun,spar=0.2),col="blue",lty=1) 
+```
+
+It is clear that arenavirus transmission is highest just after the peak of the rodent density. 
+
+
+
+### **3.3 References**
+
+Borremans, B., Leirs, H., Gryseels, S., Gunther, S., Makundi, R., Gouy de Bellocq, J., 2011. Presence of Mopeia virus, an African arenavirus, related to biotope and individual rodent host characteristics: implications for virus transmission. Vector borne zoonotic Dis. 11, 1125-31. https://doi.org/10.1089/vbz.2010.0010
+
+Borremans, B., Vossen, R., Becker-ziaja, B., Gryseels, S., Hughes, N., Gestel, M. Van, Houtte, N. Van, Gunther, S., Leirs, H., 2015. Shedding dynamics of Morogoro virus , an African arenavirus closely related to Lassa virus , in its natural reservoir host Mastomys natalensis. Nat. Publ. Gr. 5, 1-8. https://doi.org/10.1038/srep10445
+
+de Bellocq, J.G., Borremans, B., Katakweba, A., Makundi, R., Baird, S.J.E., Becker-Ziaja, B., Gunther, S., Leirs, H., 2010. Sympatric occurrence of 3 arenaviruses, Tanzania. Emerg. Infect. Dis. 16, 692-5. https://doi.org/10.3201/eid1604.091721
+
+Gryseels, S., Baird, S.J.E., Borremans, B., Makundi, R., Leirs, H., Gouy de Bellocq, J., 2017. When Viruses Don't Go Viral: The Importance of Host Phylogeographic Structure in the Spatial Spread of Arenaviruses. PLoS Pathog. 13, 1-22. https://doi.org/10.1371/journal.ppat.1006073
+
+Gunther, S., Hoofd, G., Charrel, R., Roser, C., Becker-Ziaja, B., Lloyd, G., Sabuni, C., Verhagen, R., van der Groen, G., Kennis, J., Katakweba, A., Machang'u, R., Makundi, R., Leirs, H., 2009b. Mopeia Virus-related Arenavirus in Natal Multimammate Mice , Morogoro, Tanzania. Emerg. Infect. Dis. 15, 2008-2012. https://doi.org/10.3201/eid1512.090864
+
+Maes, P., Alkhovsky, S. V., Bao, Y., Kuhn, J.H., 2018. Taxonomy of the family Arenaviridae and the order Bunyavirales: update 2018. Arch. Virol. 163, 2295-2310. https://doi.org/10.1007/s00705-018-3843-5
+
+Marien, J., Borremans, B., Gryseels, S., Broecke, B. Vanden, Becker-Ziaja, B., Makundi, R., Massawe, A., Reijniers, J., Leirs, H., 2017. Arenavirus dynamics in experimentally and naturally infected rodents. Ecohealth 14, 463-473. https://doi.org/10.1007/s10393-017-1256-7
+
+Olayemi, A., Obadare, A., Oyeyiola, A., Igbokwe, J., Fasogbon, A., Igbahenah, F., Ortsega, D., Asogun, D., Umeh, P., Vakkai, I., Abejegah, C., Pahlman, M., Becker-Ziaja, B., Gunther, S., Fichet-Calvet, E., 2016. Arenavirus diversity and phylogeography of mastomys natalensis Rodents, Nigeria. Emerg. Infect. Dis. 22, 694-697. https://doi.org/10.3201/eid2204.150155
+
