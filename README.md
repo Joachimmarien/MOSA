@@ -1,6 +1,6 @@
 # MOSA
 
-This Repository contains items that link to the data paper from Leirs et al: **Twenty-nine years of continuous monthly capture-mark-recapture data of multimammate mice (Mastomys natalensis) in Morogoro, Tanzania. **
+This Repository contains items that link to the data paper from Leirs et al: **Twenty-nine years of continuous monthly capture-mark-recapture data of multimammate mice (Mastomys natalensis) in Morogoro, Tanzania.**
 
 We included:
 - **mosa_Feb2023_flags**: the raw CMR data csv file since 1994, including flags for errors that were corrected from the field list.
