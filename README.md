@@ -13,5 +13,5 @@ We included:
 
 - **CMRINPUT excel and manual**: CMRINPUT is an MS Excel-based program to facilitate the computer storage of CMR-Data. The data are stored as “capture records”.
 
-- ** Pictures MOSA**: pdf file that contains pictures of the MOSA field that were taken during the study at different time intervals and different locations. It shows the seasonal variation in vegatation that you can expect. 
+- **Pictures MOSA**: pdf file that contains pictures of the MOSA field that were taken during the study at different time intervals and different locations. It shows the seasonal variation in vegatation that you can expect. 
 
