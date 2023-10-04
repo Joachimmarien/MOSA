@@ -11,5 +11,7 @@ We included:
 
 - Four different **RMarkdown files** that provide an introduction to the system (1), how we processed the data (2), a density and survival analyses (3) and serological information (antibodies against Morogoro arenavirus) of the rodents. 
 
-- **CMRINPUT excel and manual**: CMRINPUT is an MS Excel-based program to facilitate the computer storage of CMR-Data. The data are stored as “capture records”. 
+- **CMRINPUT excel and manual**: CMRINPUT is an MS Excel-based program to facilitate the computer storage of CMR-Data. The data are stored as “capture records”.
+
+- ** Pictures MOSA**: pdf file that contains pictures of the MOSA field that were taken during the study at different time intervals and different locations. It shows the seasonal variation in vegatation that you can expect. 
 
